@@ -1,74 +1,14 @@
-// DADOS
-class Conta {
-    id = 0;
-    descricao = '';
-    banco = '';
-    agencia = 0;
-    numeroConta = 0;
-    saldo = 0
-
-    constructor(_id, _descricao, _banco, _agencia, _numeroConta) {
-        // incrementar id automaticamente (nao inserir na instancia)
-        this.id = _id;
-        this.descricao = _descricao;    
-        this.banco = _banco;
-        this.agencia = _agencia;
-        this.numeroConta = _numeroConta;
-    }
-}
-
+// DADOS EM MEMORIA
 let currentContas = [
-    new Conta(1, 'teste1', 'bancoTeste1', 123, 123232345),
-    new Conta(2, 'teste2', 'bancoTeste2', 123, 123232345),
-    new Conta(3, 'teste3', 'bancoTeste3', 123, 123232345),
+    new Conta('teste1', 'bancoTeste1', 123, 123232345),
+    new Conta('teste2', 'bancoTeste2', 123, 123232345),
+    new Conta('teste3', 'bancoTeste3', 123, 123232345),
 ];
 
-// UTILS FUNCTIONS
 window.onload = () => {
     lerTodasContas();
 }
 
-function pegaValoresInput(input) {
-    const elemento = document.querySelector(input);
-
-    if(elemento) {
-        return elemento.value;
-    }
-
-    return null;
-}
-
-function setaValoresInput(input, value) {
-    const elemento = document.querySelector(input);
-    elemento.value = value
-}
-
-function showElemento(selector) {
-    const elemento = document.querySelector(selector);
-    elemento.style.display = 'block';
-}
-
-function hideElemento(selector) {
-    const elemento = document.querySelector(selector);
-    elemento.style.display = 'none';
-}
-
-function addConteudoHTML(selector, conteudo, concatenar) {
-    const elemento = document.querySelector(selector);
-
-    if(concatenar) {
-        elemento.innerHTML += conteudo;
-    } else {
-        elemento.innerHTML = conteudo;
-    }
-}
-
-function fechaModal() {
-    const elemento = document.querySelector('#closeModalBtn');
-    elemento.click();
-}
-
-// CRIAR CONTA FUNCTIONS
 function validacaoValoresCriacaoConta(valoresInfos) {
     return new Promise((resolve, reject) => {
         let contemInvalidos = false;
@@ -130,9 +70,7 @@ function lerTodasContas() {
 }
 
 function excluirConta(id) {    
-    console.log(id)
     const index = currentContas.findIndex((item) => item.id == id);
-    console.log(index)
 
     if(index !== -1) {
         currentContas.splice(index, 1);
@@ -154,18 +92,19 @@ function criarConta() {
         {valor: numeroConta, mensagem: 'Informe o Número da conta.'}
     ]).then(() => {
             // Adicionando nova conta que foi validada
-            currentContas.push(new Conta(currentContas.length, descricao, nomeBanco, agencia, numeroConta));
+            const novaConta = new Conta(descricao, nomeBanco, agencia, numeroConta);
+            currentContas.push(novaConta);
             
             addConteudoHTML(
                 '#tableBody', 
                 `<tr>
-                    <th scope="row">${currentContas.length}</th>
-                    <td>${nomeBanco}</td>
-                    <td>${descricao}</td>
-                    <td>${agencia}</td>
-                    <td>${0}</td>
+                    <th scope="row">${novaConta.id}</th>
+                    <td>${novaConta.banco}</td>
+                    <td>${novaConta.descricao}</td>
+                    <td>${novaConta.agencia}</td>
+                    <td>${novaConta.saldo}</td>
                     <td>
-                    <button type="button" class="btn btn-danger" onclick="excluirConta('${currentContas.length}')">
+                    <button type="button" class="btn btn-danger" onclick="excluirConta('${novaConta.id}')">
                         Excluir
                     </button>
                     </td>
