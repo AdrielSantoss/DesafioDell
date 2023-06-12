@@ -1,3 +1,5 @@
+// FUNÇÕES GENÉRICAS
+
 function pegaValoresInput(input) {
     const elemento = document.querySelector(input);
 
@@ -36,4 +38,8 @@ function addConteudoHTML(selector, conteudo, concatenar) {
 function fechaModal() {
     const elemento = document.querySelector('#closeModalBtn');
     elemento.click();
+}
+
+function formataValorReal(valor) {
+    return valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 }

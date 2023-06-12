@@ -69,7 +69,8 @@ function lerTodasContas() {
 }
 
 function abrirConta(id) {
-    window.location.href = `transacoes.html?id=${id}`;
+    window.location.href = `http://${window.location.host}/transacao/transacoes.html?id=${id}`;
+
 }
 
 function excluirConta(id) {    
