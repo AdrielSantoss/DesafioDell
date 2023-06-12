@@ -1,10 +1,3 @@
-// DADOS EM MEMORIA
-let currentContas = [
-    new Conta('teste1', 'bancoTeste1', 123, 123232345),
-    new Conta('teste2', 'bancoTeste2', 123, 123232345),
-    new Conta('teste3', 'bancoTeste3', 123, 123232345),
-];
-
 window.onload = () => {
     lerTodasContas();
 }
@@ -26,11 +19,11 @@ function validacaoValoresCriacaoConta(valoresInfos) {
         }
     
         if(!contemInvalidos) {
-            // não possui erros, pode presseguir com a criação de conta
+            // se não possui erros, pode presseguir com a criação de conta
             hideElemento(errorElement);
             resolve();
         } else {
-            // possui erros, não pode prosseguir com a criação da conta
+            // se possui erros, não pode prosseguir com a criação da conta
             reject();
         }
     })
@@ -59,14 +52,24 @@ function lerTodasContas() {
                 <td>${0}</td>
                 <td>${currentConta.saldo}</td>
                 <td>
+                <button type="button" class="btn btn-primary" onclick="abrirConta('${currentConta.id}')">
+                    Infos
+                </button>
+                <button type="button" class="btn btn-warning" onclick="excluirConta('${currentConta.id}')">
+                    Mesclar
+                </button>
                 <button type="button" class="btn btn-danger" onclick="excluirConta('${currentConta.id}')">
                     Excluir
-                </button>
+                </button> 
                 </td>
             </tr>`, 
             true
         );
     }
+}
+
+function abrirConta(id) {
+    window.location.href = `transacoes.html?id=${id}`;
 }
 
 function excluirConta(id) {    
@@ -94,7 +97,7 @@ function criarConta() {
             // Adicionando nova conta que foi validada
             const novaConta = new Conta(descricao, nomeBanco, agencia, numeroConta);
             currentContas.push(novaConta);
-            
+            // arruamr infos aqui
             addConteudoHTML(
                 '#tableBody', 
                 `<tr>
@@ -104,9 +107,15 @@ function criarConta() {
                     <td>${novaConta.agencia}</td>
                     <td>${novaConta.saldo}</td>
                     <td>
-                    <button type="button" class="btn btn-danger" onclick="excluirConta('${novaConta.id}')">
-                        Excluir
-                    </button>
+                        <button type="button" class="btn btn-primary" onclick="abrirConta('${novaConta.id}')">
+                            Infos
+                        </button>
+                        <button type="button" class="btn btn-warning" onclick="excluirConta('${novaConta.id}')">
+                            Mesclar
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="excluirConta('${novaConta.id}')">
+                            Excluir
+                        </button>
                     </td>
                 </tr>`,
                 true
