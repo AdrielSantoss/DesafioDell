@@ -39,9 +39,6 @@ function lerTodasTransacoes() {
                 <td>${currentTransacao.categoria}</td>
                 <td>${currentTransacao.descricao}</td>
                 <td>${currentTransacao.valor}</td>
-                <td>
-                    bla
-                </td>
             </tr>`, 
             true
         );
@@ -116,8 +113,8 @@ function operacaoTransacao() {
                 currentConta.transacoes[currentTransacaoIndex].valor = novaTransacao.valor;
                 currentConta.transacoes[currentTransacaoIndex].categoria = novaTransacao.categoria;
             }
-            // atualizar na tabela ultima transação editada;
-            
+            // Todo: atualizar na tabela ultima transação editada;
+
             addConteudoHTML(
                 '#tableBody', 
                 `<tr>
@@ -127,9 +124,6 @@ function operacaoTransacao() {
                     <td>${novaTransacao.categoria}</td>
                     <td>${novaTransacao.descricao}</td>
                     <td>${novaTransacao.valor}</td>
-                    <td>
-                        bla
-                    </td>
                 </tr>`,
                 true
             );
@@ -162,6 +156,7 @@ function abrirModalEditarUltimaTransacao() {
 
 function abrirModalCriarTransacao() {
     tipoOperacao = 0;
+    limpaValores();
     addConteudoHTML('#labelBtnPrimaryModal', 'Criar transação', false);
     addConteudoHTML('#labelModalHeader', 'Criação de transação', false);
 }
