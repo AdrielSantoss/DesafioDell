@@ -5,3 +5,7 @@ body {
 #criarTransacaoErrors {
     display: none;
 }
+
+#trasnferenciaErrors {
+    display: none;
+}

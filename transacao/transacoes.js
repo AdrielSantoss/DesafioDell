@@ -16,12 +16,12 @@ function carregaConta() {
         currentConta = currentContas.find((item) => item.id == queryParams?.id);
         addConteudoHTML('#descricaoConta', currentConta.descricao, false);
         addConteudoHTML('#saldoConta', formataValorReal(currentConta.saldo), false);
-        lerTodasTransacoes('#saldoConta', currentConta.saldo, false);
+        lerTodasTransacoes();
     }
 }
 
 function transacaoTipoDescricao(codTipo) {
-    return codTipo === 1 ? 'Despesa' : 'Receita';
+    return Number(codTipo) === 1 ? 'Despesa' : 'Receita';
 }
 
 function lerTodasTransacoes() {
@@ -32,13 +32,13 @@ function lerTodasTransacoes() {
         
         addConteudoHTML(
             '#tableBody', 
-            `<tr>
+            `<tr id="i${currentTransacao.id}">
                 <th scope="row">${currentTransacao.id}</th>
                 <td>${currentTransacao.data}</td>
                 <td>${transacaoTipoDescricao(currentTransacao.tipo)}</td>
                 <td>${currentTransacao.categoria}</td>
                 <td>${currentTransacao.descricao}</td>
-                <td>${currentTransacao.valor}</td>
+                <td>${formataValorReal(currentTransacao.valor)}</td>
             </tr>`, 
             true
         );
@@ -52,40 +52,13 @@ function limpaValores() {
 }
 
 function atualizaSaldo(tipo, valor) {
-    if(tipo === 0) {
-        currentConta.saldo += valor;
+    if(Number(tipo) === 0) {
+        currentConta.saldo += Number(valor);
     } else {
         currentConta.saldo -= valor;
     }
 
     addConteudoHTML('#saldoConta', formataValorReal(currentConta.saldo), false);
-}
-
-function validacaoValoresTransacao(valoresInfos) {
-    return new Promise((resolve, reject) => {
-        let contemInvalidos = false;
-        const errorElement = '#criarTransacaoErrors';
-        addConteudoHTML(errorElement, '', false);
-    
-        for (const index in valoresInfos) {
-            const currentValor = valoresInfos[index];
-    
-            if(!currentValor.valor) {
-                showElemento(errorElement);
-                addConteudoHTML(errorElement, `<li>${currentValor.mensagem}</li>`, true);
-                contemInvalidos = true;
-            }
-        }
-    
-        if(!contemInvalidos) {
-            // se não possui erros, pode presseguir com a criação de conta
-            hideElemento(errorElement);
-            resolve();
-        } else {
-            // se possui erros, não pode prosseguir com a criação da conta
-            reject();
-        }
-    })
 }
 
 function operacaoTransacao() {
@@ -95,35 +68,39 @@ function operacaoTransacao() {
     const valor = pegaValoresInput('#valor');
     const data = new Date().toLocaleDateString();
 
-    validacaoValoresTransacao([
+    validacaoValoresInput('#criarTransacaoErrors', [
         {valor: descricao, mensagem: 'Informe a Descrição da transação.'},
         {valor: categoria, mensagem: 'Informe a Categoria da transação.'},
         {valor: valor, mensagem: 'Informe o Valor da transação.'}
     ]).then(() => {
-            const novaTransacao = new Transacao(descricao, data, Number(tipo), categoria, valor);
+            let novaTransacao;
 
             if(tipoOperacao === 0) {
                 // cria nova transação
+                novaTransacao = new Transacao(descricao, data, Number(tipo), categoria, valor);
                 currentConta.transacoes.push(novaTransacao);
             } else {
                 // edita última transação
                 const currentTransacaoIndex = currentConta.transacoes.findIndex((item) => item.id === currentTransacaoId);
-                currentConta.transacoes[currentTransacaoIndex].descricao = novaTransacao.descricao;
-                currentConta.transacoes[currentTransacaoIndex].tipo = novaTransacao.tipo;
-                currentConta.transacoes[currentTransacaoIndex].valor = novaTransacao.valor;
-                currentConta.transacoes[currentTransacaoIndex].categoria = novaTransacao.categoria;
-            }
-            // Todo: atualizar na tabela ultima transação editada;
 
+                currentConta.transacoes[currentTransacaoIndex].descricao = descricao;
+                currentConta.transacoes[currentTransacaoIndex].tipo = tipo;
+                currentConta.transacoes[currentTransacaoIndex].valor = valor;
+                currentConta.transacoes[currentTransacaoIndex].categoria = categoria;
+          
+                novaTransacao = currentConta.transacoes[currentTransacaoIndex];
+                removeConteudoHTML(`#i${novaTransacao.id}`);
+            }
+            
             addConteudoHTML(
                 '#tableBody', 
-                `<tr>
+                `<tr id="i${novaTransacao.id}">
                     <th scope="row">${novaTransacao.id}</th>
                     <td>${novaTransacao.data}</td>
                     <td>${transacaoTipoDescricao(novaTransacao.tipo)}</td>
                     <td>${novaTransacao.categoria}</td>
                     <td>${novaTransacao.descricao}</td>
-                    <td>${novaTransacao.valor}</td>
+                    <td>${formataValorReal(Number(novaTransacao.valor))}</td>
                 </tr>`,
                 true
             );
@@ -159,4 +136,24 @@ function abrirModalCriarTransacao() {
     limpaValores();
     addConteudoHTML('#labelBtnPrimaryModal', 'Criar transação', false);
     addConteudoHTML('#labelModalHeader', 'Criação de transação', false);
+}
+
+function abrirModalTransferirFundos() {
+    limpaValores();
+    addConteudoHTML('#labelBtnPrimaryModal', 'Criar transação', false);
+    addConteudoHTML('#labelModalHeader', 'Criação de transação', false);
+}
+
+function transferirFundos() {
+    const valorTransferencia = pegaValoresInput('#valorTransferencia');
+    const contaTransferencia = pegaValoresInput('#contaTransferencia');
+    
+    validacaoValoresInput('#trasnferenciaErrors', [
+        {valor: valorTransferencia, mensagem: 'Informe o Valor da transferência.'},
+        {valor: contaTransferencia, mensagem: 'Informe a Conta da transferência.'}
+    ]).then(() => {
+        console.log('tudo certo');
+    }).catch(() => {
+        console.log('tudo errado');
+    })
 }

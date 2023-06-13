@@ -2,33 +2,6 @@ window.onload = () => {
     lerTodasContas();
 }
 
-function validacaoValoresCriacaoConta(valoresInfos) {
-    return new Promise((resolve, reject) => {
-        let contemInvalidos = false;
-        const errorElement = '#criarContaErrors';
-        addConteudoHTML(errorElement, '', false);
-    
-        for (const index in valoresInfos) {
-            const currentValor = valoresInfos[index];
-    
-            if(!currentValor.valor) {
-                showElemento(errorElement);
-                addConteudoHTML(errorElement, `<li>${currentValor.mensagem}</li>`, true);
-                contemInvalidos = true;
-            }
-        }
-    
-        if(!contemInvalidos) {
-            // se não possui erros, pode presseguir com a criação de conta
-            hideElemento(errorElement);
-            resolve();
-        } else {
-            // se possui erros, não pode prosseguir com a criação da conta
-            reject();
-        }
-    })
-}
-
 function limpaValores() {
     setaValoresInput('#descricao', null);
     setaValoresInput('#nomeBanco', null);
@@ -69,8 +42,7 @@ function lerTodasContas() {
 }
 
 function abrirConta(id) {
-    window.location.href = `http://${window.location.host}/transacao/transacoes.html?id=${id}`;
-
+    window.location.href = window.location.href.replace('/conta/contas.html', `/transacao/transacoes.html?id=${id}`)
 }
 
 function excluirConta(id) {    
@@ -89,7 +61,7 @@ function criarConta() {
     const agencia = pegaValoresInput('#agencia');
     const numeroConta = pegaValoresInput('#numeroConta');
 
-    validacaoValoresCriacaoConta([
+    validacaoValoresInput([
         {valor: descricao, mensagem: 'Informe a Descrição da conta.'},
         {valor: nomeBanco, mensagem: 'Informe o Nome do banco.'},
         {valor: agencia, mensagem: 'Informe a Agência.'},

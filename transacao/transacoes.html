@@ -54,7 +54,7 @@
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="abrirModalEditarUltimaTransacao()">
                 Editar última transação
             </button>
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="abrirModalEditarUltimaTransacao()">
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalTransferirFundos" onclick="abrirModalEditarUltimaTransacao()">
                 Transferir fundos
             </button>
         </div>
@@ -132,6 +132,59 @@
                     <div class="form-row">
                         <div class="col">
                             <div id="criarTransacaoErrors" class="alert alert-danger"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="operacaoTransacao()">
+                    <span id="labelBtnPrimaryModal">
+                        Criar transação
+                    </span>
+                </button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL - TRANSFERIR FUNDOS -->
+    <div class="modal fade" id="modalTransferirFundos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h1 class="modal-title fs-5">Transferir fundos</h1>
+                <button type="button" class="btn btn-close btn-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- FORM - INFORMAÇÕES DA NOVA TRANSAÇÃO -->
+                <form>
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="basic-addon1">Conta</span>
+                                </div>
+                                <select id="contaTransferencia" class="form-control">
+                                    <option value="1" selected>Despesa</option>
+                                    <option value="0">Receita</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="basic-addon1">Valor</span>
+                                </div>
+                                <input id="valorTransferencia" type="number" class="form-control" placeholder="Digite a categoria da transação">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <div id="trasnferenciaErrors" class="alert alert-danger"></div>
                         </div>
                     </div>
                 </form>

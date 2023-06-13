@@ -15,6 +15,32 @@ function setaValoresInput(input, value) {
     elemento.value = value
 }
 
+function validacaoValoresInput(errorSelector, valoresInfos) {
+    return new Promise((resolve, reject) => {
+        let contemInvalidos = false;
+        addConteudoHTML(errorSelector, '', false);
+    
+        for (const index in valoresInfos) {
+            const currentValor = valoresInfos[index];
+    
+            if(!currentValor.valor) {
+                showElemento(errorSelector);
+                addConteudoHTML(errorSelector, `<li>${currentValor.mensagem}</li>`, true);
+                contemInvalidos = true;
+            }
+        }
+    
+        if(!contemInvalidos) {
+            // não possui erros nos input
+            hideElemento(errorSelector);
+            resolve();
+        } else {
+            // possui erros nos input
+            reject();
+        }
+    })
+}
+
 function showElemento(selector) {
     const elemento = document.querySelector(selector);
     elemento.style.display = 'block';
@@ -33,6 +59,11 @@ function addConteudoHTML(selector, conteudo, concatenar) {
     } else {
         elemento.innerHTML = conteudo;
     }
+}
+
+function removeConteudoHTML(selector) {
+    const elemento = document.querySelector(selector);
+    elemento.remove();
 }
 
 function fechaModal() {
