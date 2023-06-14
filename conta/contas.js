@@ -12,46 +12,45 @@ function limpaValores() {
 // CRUD (CREATE, READ, UPDATE, DELETE)
 function lerTodasContas() {
     addConteudoHTML('#tableBody', '', false);
+    const contas = consultarDados('contas');
 
-    for (const index in currentContas) {
-        const currentConta = currentContas[index];
-        
-        addConteudoHTML(
-            '#tableBody', 
-            `<tr>
-                <th scope="row">${currentConta.id}</th>
-                <td>${currentConta.banco}</td>
-                <td>${currentConta.descricao}</td>
-                <td>${0}</td>
-                <td>${currentConta.saldo}</td>
-                <td>
-                <button type="button" class="btn btn-primary" onclick="abrirConta('${currentConta.id}')">
-                    Infos
-                </button>
-                <button type="button" class="btn btn-warning" onclick="excluirConta('${currentConta.id}')">
-                    Mesclar
-                </button>
-                <button type="button" class="btn btn-danger" onclick="excluirConta('${currentConta.id}')">
-                    Excluir
-                </button> 
-                </td>
-            </tr>`, 
-            true
-        );
+    if(contas !== null){
+        for (const currentConta of contas) {
+            const transacoes = consultarDados('transacoes');
+            const currentTransacoes = transacoes.filter((transacao) => transacao.conta_id === currentConta.id);
+            
+            addConteudoHTML(
+                '#tableBody', 
+                `<tr>
+                    <th scope="row">${currentConta.id}</th>
+                    <td>${currentConta.banco}</td>
+                    <td>${currentConta.descricao}</td>
+                    <td>${currentTransacoes.length}</td>
+                    <td>${formataValorReal(Number(currentConta.saldo))}</td>
+                    <td>
+                    <button type="button" class="btn btn-primary" onclick="abrirTransacoes('${currentConta.id}')">
+                        Infos
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="excluirConta('${currentConta.id}')">
+                        Mesclar
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="excluirConta('${currentConta.id}')">
+                        Excluir
+                    </button> 
+                    </td>
+                </tr>`, 
+                true
+            );
+        }
     }
 }
 
-function abrirConta(id) {
+function abrirTransacoes(id) {
     window.location.href = window.location.href.replace('/conta/contas.html', `/transacao/transacoes.html?id=${id}`)
 }
 
 function excluirConta(id) {    
-    const index = currentContas.findIndex((item) => item.id == id);
-
-    if(index !== -1) {
-        currentContas.splice(index, 1);
-    }
-
+    removerDado('contas', id);
     lerTodasContas();
 }
 
@@ -61,7 +60,7 @@ function criarConta() {
     const agencia = pegaValoresInput('#agencia');
     const numeroConta = pegaValoresInput('#numeroConta');
 
-    validacaoValoresInput([
+    validacaoValoresInput('#criarContaErrors', [
         {valor: descricao, mensagem: 'Informe a Descrição da conta.'},
         {valor: nomeBanco, mensagem: 'Informe o Nome do banco.'},
         {valor: agencia, mensagem: 'Informe a Agência.'},
@@ -69,7 +68,8 @@ function criarConta() {
     ]).then(() => {
             // Adicionando nova conta que foi validada
             const novaConta = new Conta(descricao, nomeBanco, agencia, numeroConta);
-            currentContas.push(novaConta);
+            adicionarDado('contas', novaConta);
+
             // arruamr infos aqui
             addConteudoHTML(
                 '#tableBody', 
@@ -80,7 +80,7 @@ function criarConta() {
                     <td>${novaConta.agencia}</td>
                     <td>${novaConta.saldo}</td>
                     <td>
-                        <button type="button" class="btn btn-primary" onclick="abrirConta('${novaConta.id}')">
+                        <button type="button" class="btn btn-primary" onclick="abrirTransacoes('${novaConta.id}')">
                             Infos
                         </button>
                         <button type="button" class="btn btn-warning" onclick="excluirConta('${novaConta.id}')">
@@ -94,7 +94,7 @@ function criarConta() {
                 true
             );
             limpaValores();
-            fechaModal();
+            fecharModal('#closeModalBtn');
         }
     ).catch((err) => console.error('Ocorreu um erro ao criar a conta', err));
 }

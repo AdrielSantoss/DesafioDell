@@ -66,8 +66,8 @@ function removeConteudoHTML(selector) {
     elemento.remove();
 }
 
-function fechaModal() {
-    const elemento = document.querySelector('#closeModalBtn');
+function fecharModal(selector) {
+    const elemento = document.querySelector(selector);
     elemento.click();
 }
 

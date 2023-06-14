@@ -23,13 +23,8 @@
             </a>
             </li>
             <li class="nav-item">
-            <a class="nav-link text-white" href="#">
+            <a class="nav-link text-white" href="#" onclick="abrirContas()">
                 <small>Contas</small>
-            </a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link text-white" href="#">
-                <small>Transações</small>
             </a>
             </li>
         </ul>
@@ -54,7 +49,7 @@
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="abrirModalEditarUltimaTransacao()">
                 Editar última transação
             </button>
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalTransferirFundos" onclick="abrirModalEditarUltimaTransacao()">
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalTransferirFundos" onclick="abrirModalTransferirFundos()">
                 Transferir fundos
             </button>
         </div>
@@ -166,8 +161,6 @@
                                   <span class="input-group-text" id="basic-addon1">Conta</span>
                                 </div>
                                 <select id="contaTransferencia" class="form-control">
-                                    <option value="1" selected>Despesa</option>
-                                    <option value="0">Receita</option>
                                 </select>
                             </div>
                         </div>
@@ -178,7 +171,7 @@
                                 <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1">Valor</span>
                                 </div>
-                                <input id="valorTransferencia" type="number" class="form-control" placeholder="Digite a categoria da transação">
+                                <input id="valorTransferencia" type="number" class="form-control" placeholder="Digite o Valor da trasnferência">
                             </div>
                         </div>
                     </div>
@@ -190,10 +183,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="closeModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="operacaoTransacao()">
+                <button type="button" id="closeModalBtnFundos" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="transferirFundos()">
                     <span id="labelBtnPrimaryModal">
-                        Criar transação
+                        Transferir
                     </span>
                 </button>
             </div>
