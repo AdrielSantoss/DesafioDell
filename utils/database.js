@@ -113,22 +113,24 @@ function adicionarPrimaryKey(id) {
 // DADOS PARA TESTE
 function adicionaDadosParaTeste() {
     const contas = localStorage.getItem('contas');
+    const currentDate = new Date();
     if(!contas)  {
         localStorage.setItem('contas', JSON.stringify([
             new Conta('TESTE1', 'contaTeste1', 123, 56567, 300),
             new Conta('TESTE2', 'contaTeste2', 123, 123696, 400),
             new Conta('TESTE3', 'contaTeste3', 123, 2354345, 800),
         ]));
-
+        
+        // Trnasações com meses variados
         localStorage.setItem('transacoes', JSON.stringify([
-            new Transacao('teste_transacao', new Date().toLocaleDateString(), 0, 'carro', 200, 1),
-            new Transacao('teste_transacao', new Date().toLocaleDateString(), 0, 'carro', 300, 1),
-            new Transacao('teste_transacao', new Date().toLocaleDateString(), 1, 'carro', 200, 1),
-            new Transacao('teste_transacao', new Date().toLocaleDateString(), 0, 'carro', 200, 2),
-            new Transacao('teste_transacao', new Date().toLocaleDateString(), 0, 'carro', 200, 2),
-            new Transacao('teste_transacao', new Date().toLocaleDateString(), 1, 'carro', 500, 3),
-            new Transacao('teste_transacao', new Date().toLocaleDateString(), 1, 'carro', 500, 3),
-            new Transacao('teste_transacao', new Date().toLocaleDateString(), 0, 'carro', 1800, 3)
+            new Transacao('teste_transacao', new Date(currentDate.setMonth(-5)), 0, 'carro', 200, 1),
+            new Transacao('teste_transacao', new Date(currentDate.setMonth(-2)), 0, 'carro', 300, 1),
+            new Transacao('teste_transacao', new Date(currentDate.setMonth(-8)), 1, 'carro', 200, 1),
+            new Transacao('teste_transacao', new Date(currentDate.setMonth(-4)), 0, 'carro', 200, 2),
+            new Transacao('teste_transacao', new Date(), 0, 'carro', 200, 2),
+            new Transacao('teste_transacao', new Date(), 1, 'carro', 500, 3),
+            new Transacao('teste_transacao', new Date(), 1, 'carro', 500, 3),
+            new Transacao('teste_transacao', new Date(), 0, 'carro', 1800, 3)
         ]));
     }
 }

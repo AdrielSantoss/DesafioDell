@@ -2,14 +2,13 @@ window.onload = () => {
     lerTodasContas();
 }
 
-function limpaValores() {
+function limparValores() {
     setaValoresInput('#descricao', null);
     setaValoresInput('#nomeBanco', null);
     setaValoresInput('#agencia', null);
     setaValoresInput('#numeroConta', null);
 }
 
-// CRUD (CREATE, READ, UPDATE, DELETE)
 function lerTodasContas() {
     addConteudoHTML('#tableBody', '', false);
     const contas = consultarDados('contas');
@@ -22,9 +21,10 @@ function lerTodasContas() {
             addConteudoHTML(
                 '#tableBody', 
                 `<tr>
-                    <th scope="row">${currentConta.id}</th>
                     <td>${currentConta.banco}</td>
                     <td>${currentConta.descricao}</td>
+                    <td>${currentConta.numeroConta}</td>
+                    <td>${currentConta.agencia}</td>
                     <td>${currentTransacoes.length}</td>
                     <td>${formataValorReal(Number(currentConta.saldo))}</td>
                     <td>
@@ -50,6 +50,13 @@ function abrirTransacoes(id) {
 }
 
 function excluirConta(id) {    
+    const transacoes = consultarDados('transacoes');
+    const currentContaTransacoes = transacoes.filter((transacao) => transacao.conta_id == id);
+
+    for (const transacao of currentContaTransacoes) {
+        removerDado('transacoes', transacao.id);
+    }
+
     removerDado('contas', id);
     lerTodasContas();
 }
@@ -69,12 +76,9 @@ function criarConta() {
             // Adicionando nova conta que foi validada
             const novaConta = new Conta(descricao, nomeBanco, agencia, numeroConta);
             adicionarDado('contas', novaConta);
-
-            // arruamr infos aqui
             addConteudoHTML(
                 '#tableBody', 
                 `<tr>
-                    <th scope="row">${novaConta.id}</th>
                     <td>${novaConta.banco}</td>
                     <td>${novaConta.descricao}</td>
                     <td>${novaConta.agencia}</td>
@@ -93,12 +97,12 @@ function criarConta() {
                 </tr>`,
                 true
             );
-            limpaValores();
+            limparValores();
             fecharModal('#closeModalBtn');
         }
     ).catch((err) => console.error('Ocorreu um erro ao criar a conta', err));
 }
 
-
-
- 
+function abrirGeral() {
+    window.location.href = window.location.href.replace('/conta/contas.html', '/index.html');
+}

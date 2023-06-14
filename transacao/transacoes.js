@@ -1,6 +1,4 @@
 let currentConta; // conta selecionada
-let currentTransacoes; // transações da conta selecionada
-let currentContas; // todas as contas
 
 let tipoOperacao = 0; // 0 = criar, 1 = editar
 let currentTransacaoId = 0; // identificação da transação a ser editada
@@ -16,27 +14,21 @@ function carregarConta() {
 
     if(queryParams?.id) {
         currentConta = consultarDado('contas', queryParams?.id);
-        currentContas = consultarDados('contas');
         addConteudoHTML('#descricaoConta', currentConta.descricao, false);
         addConteudoHTML('#saldoConta', formataValorReal(currentConta.saldo), false);
         lerTodasTransacoes();
     }
 }
 
-function transacaoTipoDescricao(codTipo) {
-    return Number(codTipo) === 1 ? 'Despesa' : 'Receita';
-}
-
 function lerTodasTransacoes() {
     addConteudoHTML('#tableBody', '', false);
-    currentTransacoes = lertTransacoesCurrentConta();
+    const currentTransacoes = lerTransacoesCurrentConta();
 
     for (const currentTransacao of currentTransacoes) {        
         addConteudoHTML(
             '#tableBody', 
             `<tr id="i${currentTransacao.id}">
-                <th scope="row">${currentTransacao.id}</th>
-                <td>${currentTransacao.data}</td>
+                <td>${new Date(currentTransacao.data).toLocaleDateString()}</td>
                 <td>${transacaoTipoDescricao(currentTransacao.tipo)}</td>
                 <td>${currentTransacao.categoria}</td>
                 <td>${currentTransacao.descricao}</td>
@@ -47,7 +39,7 @@ function lerTodasTransacoes() {
     }
 }
 
-function lertTransacoesCurrentConta() {
+function lerTransacoesCurrentConta() {
     const transacoes = consultarDados('transacoes');
     currentTransacoes = transacoes.filter((transacao) => transacao.conta_id === currentConta.id);
     return currentTransacoes;
@@ -60,11 +52,16 @@ function limparValores() {
     setaValoresInput('#valorTransferencia', null);
 }
 
-function atualizarSaldo(tipo, valor) {
-    if(Number(tipo) === 0) {
-        currentConta.saldo += Number(valor);
-    } else {
-        currentConta.saldo -= valor;
+function atualizarSaldo() {
+    const transacoes = lerTransacoesCurrentConta();
+    currentConta.saldo = 0;
+
+    for (const transacao of transacoes) {
+        if(transacao.tipo == 0) {
+            currentConta.saldo += transacao.valor;
+        } else {
+            currentConta.saldo -= transacao.valor;
+        }
     }
 
     atualizarDado('contas', currentConta.id, currentConta);
@@ -72,11 +69,11 @@ function atualizarSaldo(tipo, valor) {
 }
 
 function operacaoTransacao() {
-    const tipo = pegaValoresInput('#tipo');
+    const tipo = Number(pegaValoresInput('#tipo'));
     const categoria = pegaValoresInput('#categoria');
     const descricao = pegaValoresInput('#descricao');
-    const valor = pegaValoresInput('#valor');
-    const data = new Date().toLocaleDateString();
+    const valor = Number(pegaValoresInput('#valor'));
+    const data = new Date();
 
     validacaoValoresInput('#criarTransacaoErrors', [
         {valor: descricao, mensagem: 'Informe a Descrição da transação.'},
@@ -87,16 +84,14 @@ function operacaoTransacao() {
 
             if(tipoOperacao === 0) {
                 // cria nova transação
-                novaTransacao = new Transacao(descricao, data, Number(tipo), categoria, valor, currentConta.id);
+                novaTransacao = new Transacao(descricao, data, tipo, categoria, valor, currentConta.id);
                 adicionarDado('transacoes', novaTransacao);
-                atualizarSaldo(novaTransacao.tipo, novaTransacao.valor);
             } else {
-                // edita última transação
-                currentTransacao = currentTransacoes.find((transacao) => transacao.id == currentTransacaoId);
+                // edita última transação com novos dados              
                 novaTransacao = {
                     id: currentTransacaoId,
                     descricao: descricao,
-                    data: new Date().toLocaleDateString(),
+                    data: new Date(),
                     tipo: tipo,
                     categoria: categoria,
                     valor: valor,
@@ -105,15 +100,12 @@ function operacaoTransacao() {
 
                 atualizarDado('transacoes', currentTransacaoId, novaTransacao);
                 removeConteudoHTML(`#i${novaTransacao.id}`);
-                const novoValor = (currentTransacao.valor - valor);
-                atualizarSaldo(novoValor < 0 ? 1 : 0, novoValor);
             }
             
             addConteudoHTML(
                 '#tableBody', 
                 `<tr id="i${novaTransacao.id}">
-                    <th scope="row">${novaTransacao.id}</th>
-                    <td>${novaTransacao.data}</td>
+                    <td>${new Date(novaTransacao.data).toLocaleDateString()}</td>
                     <td>${transacaoTipoDescricao(novaTransacao.tipo)}</td>
                     <td>${novaTransacao.categoria}</td>
                     <td>${novaTransacao.descricao}</td>
@@ -123,13 +115,14 @@ function operacaoTransacao() {
             );
 
             limparValores();
+            atualizarSaldo();
             fecharModal('#closeModalBtn');
         }
-    ).catch((err) => console.error('Ocorreu um erro ao criar a conta', err));
+    ).catch((err) => console.error('Ocorreu um erro ao criar a transação', err));
 }
 
 function abrirModalEditarUltimaTransacao() {
-    const transacoes = lertTransacoesCurrentConta();
+    const transacoes = lerTransacoesCurrentConta();
     const indexUltimaTransacao = transacoes.length - 1;
 
     if(indexUltimaTransacao !== -1) {
@@ -155,6 +148,7 @@ function abrirModalCriarTransacao() {
 }
 
 function abrirModalTransferirFundos() {
+    const currentContas = consultarDados('contas');
     addConteudoHTML('#contaTransferencia', '', false);
     limparValores();
 
@@ -179,15 +173,14 @@ function transferirFundos() {
         }
         
         // adiciona transferencia de DEPOSITO na conta de origem
-        const novaTransacaoOrigem = new Transacao('Transferência de fundos', new Date().toLocaleDateString(), 1, 'Saque', valorTransferencia, currentConta.id);
+        const novaTransacaoOrigem = new Transacao('Transferência de fundos', new Date(), 1, 'Saque', valorTransferencia, currentConta.id);
         adicionarDado('transacoes', novaTransacaoOrigem);
-        atualizarSaldo(1, valorTransferencia);
+        atualizarSaldo();
 
         addConteudoHTML(
             '#tableBody', 
             `<tr id="i${novaTransacaoOrigem.id}">
-                <th scope="row">${novaTransacaoOrigem.id}</th>
-                <td>${novaTransacaoOrigem.data}</td>
+                <td>${new Date(novaTransacaoOrigem.data).toLocaleDateString()}</td>
                 <td>${transacaoTipoDescricao(novaTransacaoOrigem.tipo)}</td>
                 <td>${novaTransacaoOrigem.categoria}</td>
                 <td>${novaTransacaoOrigem.descricao}</td>
@@ -197,7 +190,7 @@ function transferirFundos() {
         );
 
         // adiciona transferencia de SAQUE na conta de destino.
-        const novaTransacaoDestino = new Transacao('Transferência de fundos', new Date().toLocaleDateString(), 0, 'Depósito', valorTransferencia, Number(contaTransferencia));
+        const novaTransacaoDestino = new Transacao('Transferência de fundos', new Date(), 0, 'Depósito', valorTransferencia, Number(contaTransferencia));
         adicionarDado('transacoes', novaTransacaoDestino);
 
         hideElemento(errorSelector);
@@ -208,4 +201,8 @@ function transferirFundos() {
 
 function abrirContas() {
     window.location.href = window.location.href.replace(`/transacao/transacoes.html${window.location.search}`, '/conta/contas.html')
+}
+
+function abrirGeral() {
+    window.location.href = window.location.href.replace(`/transacao/transacoes.html${window.location.search}`, '/index.html');
 }

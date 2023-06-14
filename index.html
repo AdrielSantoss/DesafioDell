@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="contas.css"> -->
+    <title>Desafio dell</title>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-primary mb-3">
+        <div class="container-fluid text-white">
+          <a class="navbar-brand text-white" href="#">Desafio Dell</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active text-white" aria-current="page" href="#">
+                    <small>Geral</small>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" onclick="abrirContas()" style="cursor: pointer;">
+                    <small>Contas</small>
+                </a>
+              </li>
+            </ul>
+            <button class="btn btn-light" type="submit">DellUser</button>
+          </div>
+        </div>
+    </nav>
+
+      <!-- TABLE - EXIBIÇÃO DAS CONTAS  -->
+      <section class="p-3">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">Contas</div>
+            <div class="card-body bg-light">
+                <div class="row mb-3">
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary">
+                            Saldo: <span id="saldoTotal"></span>
+                        </button>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary" onclick="abrirContas()">
+                            Ver minhas contas
+                        </button>                 
+                    </div>
+                </div>
+         
+                <div>
+                    <table class="table table-light table-striped shadow">
+                        <thead>
+                            <tr class="bg-primary">
+                                <th scope="col">Banco</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Nº Conta</th>
+                                <th scope="col">Agência</th>
+                                <th scope="col">Transações</th>
+                                <th scope="col">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyContas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      <section class="p-3">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">Receitas do Mês</div>
+            <div class="card-body">
+                <div>
+                    <table class="table table-light table-striped shadow">
+                        <thead>
+                            <tr class="bg-primary">
+                                <th scope="col">Conta</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyResumoReceitas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      <section class="p-3">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">Despesas do Mês</div>
+            <div class="card-body">
+                <div>
+                    <table class="table table-light table-striped shadow">
+                        <thead>
+                            <tr class="bg-primary">
+                                <th scope="col">Conta</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyResumoDespesas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      <section class="p-3">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">Resumo do Saldo (últimos 6 meses)</div>
+            <div class="card-body">
+                <button type="button" class="btn btn-primary mb-3">
+                    Saldo: <span id="saldoTotalResumo"></span>
+                </button>
+                <div>
+                    <table class="table table-light table-striped shadow">
+                        <thead>
+                            <tr class="bg-primary">
+                            <th scope="col">Data</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyResumoSaldo"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </section>
+
+
+    <!-- SCRIPTS -->
+    <script src="./utils/utils.js"></script>
+    <script src="./utils/database.js"></script>
+    <script src="./index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+</body>
+</html> 

@@ -74,3 +74,7 @@ function fecharModal(selector) {
 function formataValorReal(valor) {
     return valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 }
+
+function transacaoTipoDescricao(codTipo) {
+    return Number(codTipo) === 1 ? 'Despesa' : 'Receita';
+}
