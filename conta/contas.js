@@ -81,8 +81,10 @@ function criarConta() {
                 `<tr>
                     <td>${novaConta.banco}</td>
                     <td>${novaConta.descricao}</td>
+                    <td>${novaConta.numeroConta}</td>
                     <td>${novaConta.agencia}</td>
-                    <td>${novaConta.saldo}</td>
+                    <td>${0}</td>
+                    <td>${formataValorReal(Number(novaConta.saldo))}</td>
                     <td>
                         <button type="button" class="btn btn-primary" onclick="abrirTransacoes('${novaConta.id}')">
                             Infos
